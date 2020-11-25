@@ -2,6 +2,7 @@ from flask import Flask, request, redirect, render_template, url_for
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 
+
 ############################################################
 # SETUP
 ############################################################
@@ -21,7 +22,7 @@ def plants_list():
 
     # TODO: Replace the following line with a database call to retrieve *all*
     # plants from the Mongo database's `plants` collection.
-    plants_data = ''
+    plants_data = mongo.db.plants.find({})
 
     context = {
         'plants': plants_data,
@@ -40,16 +41,18 @@ def create():
         # TODO: Get the new plant's name, variety, photo, & date planted, and 
         # store them in the object below.
         new_plant = {
-            'name': '',
-            'variety': '',
-            'photo_url': '',
-            'date_planted': ''
+            'name': request.form.get('plant_name'),
+            'variety': request.form.get('variety'),
+            'photo_url': request.form.get('photo'),
+            'date_planted': request.form.get('date_planted')
         }
         # TODO: Make an `insert_one` database call to insert the object into the
         # database's `plants` collection, and get its inserted id. Pass the 
         # inserted id into the redirect call below.
+        result = mongo.db.plants.insert_one(new_plant)
 
-        return redirect(url_for('detail', plant_id=''))
+
+        return redirect(url_for('detail', plant_id=result.inserted_id))
 
     else:
         return render_template('create.html')
