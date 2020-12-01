@@ -27,10 +27,12 @@ def plants_list():
     }
     return render_template('plants_list.html', **context)
 
+
 @app.route('/about')
 def about():
     """Display the about page."""
     return render_template('about.html')
+
 
 @app.route('/create', methods=['GET', 'POST'])
 def create():
@@ -51,6 +53,7 @@ def create():
     else:
         return render_template('create.html')
 
+
 @app.route('/plant/<plant_id>')
 def detail(plant_id):
     """Display the plant detail page & process data from the harvest form."""
@@ -66,11 +69,10 @@ def detail(plant_id):
     }
     return render_template('detail.html', **context)
 
+
 @app.route('/harvest/<plant_id>', methods=['POST'])
 def harvest(plant_id):
-    """
-    Accepts a POST request with data for 1 harvest and inserts into database.
-    """
+    "Accepts a POST request with data for 1 harvest and inserts into database"
 
     new_harvest = {
         'quantity': request.form.get('harvested_amount'), 
@@ -81,6 +83,7 @@ def harvest(plant_id):
     result = mongo.db.harvests.insert_one(new_harvest)        
 
     return redirect(url_for('detail', plant_id=plant_id)) 
+
 
 @app.route('/edit/<plant_id>', methods=['GET', 'POST'])
 def edit(plant_id):
@@ -116,8 +119,11 @@ def edit(plant_id):
 
         return render_template('edit.html', **context)
 
+
 @app.route('/delete/<plant_id>', methods=['POST'])
 def delete(plant_id):
+    "deletes the data of a selected plant, both on plant database and it's corrosponding harvest database"
+
     result = mongo.db.plants.delete_one({
         '_id': ObjectId(plant_id)
     })
